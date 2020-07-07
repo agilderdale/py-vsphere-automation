@@ -213,7 +213,7 @@ f_update_config_file() {
       var1=`echo $line |awk '{print $1}'`
       do
         echo $var1
-        if [[ $line =~ .*#.* ]] || [[ ! -z "$var" ]] ; then
+        if [[ $var1 =~ .*#.* ]] || [[ ! -z "$var1" ]] ; then
           sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
         fi
     done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
@@ -233,7 +233,7 @@ fi
 f_startup_question
 f_choice_question
 
-cat /tmp/pvariables
+cat /tmp/variables
 rm -Rf /tmp/variables
 
 f_info "Task COMPLETED - please check logs for details"
