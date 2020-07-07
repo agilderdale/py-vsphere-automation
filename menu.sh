@@ -1,22 +1,30 @@
 #!/bin/bash
 
-# Created and maintained by Alicja Gilderdale - https://github.com/agilderdale/pks-env.git
-# This script is for setting up PKS Client VM from the scratch.
+# Created and maintained by Alicja Gilderdale - https://github.com/agilderdale/py-vsphere-automation.git
+# This script is to install and configure nested env for vSphere7 with K8s.
 # Only basic Ubuntu image is required - I personally use Ubuntu Desktop version to have browser:
 # https://www.ubuntu.com/download/desktop
-# Some commands has been used from from pks-prep bdereims@vmware.com
-#Tested on Ubuntu 18.04 LTS
+# Majority of the repo is a fork from the https://github.com/nvpnathan/py-vsphere-automation.git
+# This script is a wrapper interface to make it easier to execute #Tested on Ubuntu 18.04 LTS
 # run this script as sudo
-# bash -c "$(wget -O - https://raw.githubusercontent.com/agilderdale/pks-env/master/support-scripts/setup-pks-client.sh)"
+# bash -c "$(wget -O - https://raw.githubusercontent.com/agilderdale/py-vsphere-automation/blob/master/menu.sh)"
 
-BINDIR=/usr/local/bin
-BOSHRELEASE=6.2.1
-HELMRELEASE=2.14.1
-OMRELEASE=4.5.0
-PIVNETRELEASE=1.0.0
-PKSRELEASE=1.5.2
-PIVOTALTOKEN=''
-BITSDIR="/DATA/packages"
+BINDIR='/usr/local/bin'
+DOMAIN='mylab.com'
+NTP_SERVER='dns-ntp-61-23.mylab.com'
+PARENT_VC=-'p-vcsa67u3-61-26.mylab.com'
+VC_ESX_HOST='10.172.210.52'
+VC_ESXI_DATASTORE='61-22-SD3-890GB'
+MASTER_PASSWORD='VMware1!'
+BITSDIR='/DATA'
+VC_ISO_PATH='/DATA/packages'
+VC_IP='192.168.41.22'
+VC_DNS_SERVERS='dns-ntp-61-23.mylab.com'
+VC_GATEWAY='192.168.41.1'
+VC_PORTGROUP='vDS-61-PG-Trunk'
+ESX_IP_1='192.168.41.27'
+ESX_IP_2='192.168.41.28'
+ESX_IP_3='192.168.41.29'
 
 
 f_info(){
@@ -160,8 +168,36 @@ f_init(){
         mkdir -p $BITSDIR;
         f_verify
     fi
+
+    f_input_vars DOMAIN
+    f_input_vars NTP_SERVER
+    f_input_vars PARENT_VC
+    f_input_vars VC_ESX_HOST
+    f_input_vars VC_ESXI_DATASTORE
+    f_input_vars MASTER_PASSWORD
+    f_input_vars BITSDIR
 }
 
+f_download_git_repo() {
+    echo "-------------------------------------------------------------------------------------------"
+    f_info "Downloading  github repo from https://github.com/agilderdale/py-vsphere-automation.git"
+    if [[ -e ${BITSDIR}/GIT/py-vsphere-automation/ ]]
+    then
+        rm -Rf ${BITSDIR}/GIT/py-vsphere-automation
+    else [[ ! -e ${BITSDIR}/GIT/ ]]
+        mkdir -p ${BITSDIR}/GIT/
+    fi
+    cd ${BITSDIR}/GIT/
+    git clone https://github.com/agilderdale/py-vsphere-automation.git
+    f_info "Git repo download - COMPLETED"
+
+}
+
+f_update_template(){
+  source /tmp/variables
+
+
+}
 #####################################
 # MAIN
 #####################################
