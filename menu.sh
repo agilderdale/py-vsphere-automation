@@ -177,7 +177,6 @@ f_init(){
     f_input_vars VC_ESX_HOST
     f_input_vars VC_ESXI_DATASTORE
     f_input_vars MASTER_PASSWORD
-    f_input_vars BITSDIR
     f_input_vars VC_GATEWAY
     f_input_vars VC_PORTGROUP
     f_input_vars ESX_IP_1
@@ -199,6 +198,9 @@ f_download_git_repo() {
     fi
     cd ${BITSDIR}/GIT/
     git clone https://github.com/agilderdale/py-vsphere-automation.git
+    cd py-vsphere-automation/
+    git submodule init
+    git submodule update
     f_info "Git repo download - COMPLETED"
 }
 
@@ -212,9 +214,9 @@ f_update_config_file() {
       do
         echo $var1
         if [[ $line =~ .*#.* ]] || [[ ! -z "$var" ]] ; then
-          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/git/py-vsphere-automation/vsphere_config.yaml
+          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
         fi
-    done < ${BITSDIR}/git/py-vsphere-automation/vsphere_config.yaml
+    done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
 }
 
 
