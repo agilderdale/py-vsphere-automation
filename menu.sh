@@ -12,7 +12,7 @@
 BINDIR='/usr/local/bin'
 DOMAIN='mylab.com'
 NTP_SERVER='dns-ntp-61-23.mylab.com'
-PARENT_VC=-'p-vcsa67u3-61-26.mylab.com'
+PARENT_VC='p-vcsa67u3-61-26.mylab.com'
 VC_ESX_HOST='10.172.210.52'
 VC_ESXI_DATASTORE='61-22-SD3-890GB'
 MASTER_PASSWORD='VMware1!'
@@ -96,6 +96,8 @@ f_choice_question() {
 #                    f_verify_pre_reqs;
                     ;;
             [Aa]* ) f_init;
+                    f_download_git_repo;
+                    f_update_config_file;
                     ;;
             [Xx]* ) clear; f_init;
                     f_input_vars PKSRELEASE;
@@ -162,8 +164,7 @@ f_init(){
 
     source /tmp/variables
 
-    if [[ ! -e $BITSDIR ]]
-    then
+    if [[ ! -e $BITSDIR ]] ; then
         f_info "Creating $BITSDIR directory:"
         mkdir -p $BITSDIR;
         f_verify
@@ -171,11 +172,17 @@ f_init(){
 
     f_input_vars DOMAIN
     f_input_vars NTP_SERVER
+    f_input_vars VC_DNS_SERVERS
     f_input_vars PARENT_VC
     f_input_vars VC_ESX_HOST
     f_input_vars VC_ESXI_DATASTORE
     f_input_vars MASTER_PASSWORD
     f_input_vars BITSDIR
+    f_input_vars VC_GATEWAY
+    f_input_vars VC_PORTGROUP
+    f_input_vars ESX_IP_1
+    f_input_vars ESX_IP_2
+    f_input_vars ESX_IP_3
 }
 
 f_download_git_repo() {
@@ -190,14 +197,24 @@ f_download_git_repo() {
     cd ${BITSDIR}/GIT/
     git clone https://github.com/agilderdale/py-vsphere-automation.git
     f_info "Git repo download - COMPLETED"
-
 }
 
-f_update_template(){
-  source /tmp/variables
+f_update_config_file() {
+    source /tmp/variables
 
+    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
 
+    while read -r line
+      var1=`echo $line |awk '{print $1}'`
+      do
+        echo $var1
+        if [[ $line =~ .*#.* ]] || [[ ! -z "$var" ]] ; then
+          sed -i -e "s/<${var1}>/${!var1}/g" ${bitsdir}/git/py-vsphere-automation/vsphere_config.yaml
+        fi
+    done < ${bitsdir}/git/py-vsphere-automation/vsphere_config.yaml
 }
+
+
 #####################################
 # MAIN
 #####################################
