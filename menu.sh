@@ -186,6 +186,7 @@ f_init(){
 }
 
 f_download_git_repo() {
+    source /tmp/variables
     echo "-------------------------------------------------------------------------------------------"
     f_info "Downloading  github repo from https://github.com/agilderdale/py-vsphere-automation.git"
     if [[ -e ${BITSDIR}/GIT/py-vsphere-automation/ ]]
@@ -211,9 +212,9 @@ f_update_config_file() {
       do
         echo $var1
         if [[ $line =~ .*#.* ]] || [[ ! -z "$var" ]] ; then
-          sed -i -e "s/<${var1}>/${!var1}/g" ${bitsdir}/git/py-vsphere-automation/vsphere_config.yaml
+          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/git/py-vsphere-automation/vsphere_config.yaml
         fi
-    done < ${bitsdir}/git/py-vsphere-automation/vsphere_config.yaml
+    done < ${BITSDIR}/git/py-vsphere-automation/vsphere_config.yaml
 }
 
 
