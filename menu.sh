@@ -190,8 +190,10 @@ f_download_git_repo() {
     f_info "Downloading  github repo from https://github.com/agilderdale/py-vsphere-automation.git"
     if [[ -e ${BITSDIR}/GIT/py-vsphere-automation/ ]]
     then
+        f_info "${BITSDIR}/GIT/py-vsphere-automation - cleaning up"
         rm -Rf ${BITSDIR}/GIT/py-vsphere-automation
     else [[ ! -e ${BITSDIR}/GIT/ ]]
+        f_info "Creating ${BITSDIR}/GIT/py-vsphere-automation"
         mkdir -p ${BITSDIR}/GIT/
     fi
     cd ${BITSDIR}/GIT/
