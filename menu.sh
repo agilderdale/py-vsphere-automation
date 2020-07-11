@@ -218,17 +218,32 @@ f_update_config_file() {
       fi
     done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
 
-#    while read -r line
-#    do
-#      var1=`echo $line |awk '{print $1}'`
-#      echo $var1
-#        if [[  $var1 != \#* ]] || [[ ! -z "$var1" ]] ; then
-#          echo "test"
-#          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
-#        else
-#          echo "Line with comment"
-#        fi
-#    done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
+}
+f_update_config_file1() {
+    source /tmp/variables
+
+    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
+    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config.yaml
+
+    while read line; do
+    case "$line" in \#*) continue ;; esac
+      var1=`echo $line`
+      echo $var1
+      if [[ ! -z "$var1" ]] ; then
+         sed -i -e "s/: /=/g" /tmp/config.yaml
+      fi
+    done < /tmp/config.yaml
+
+    while read line; do
+    case "$line" in \#*) continue ;; esac
+      var1=`echo $line |awk '{print $1}' | sed 's/://g'`
+      echo $var1
+      if [[ ! -z "$var1" ]] ; then
+         sed -i -e "s/<${var1}>/${!var1}/g" /tmp/config.yaml
+         sed -i -e 's/^/export /' /tmp/config.yaml
+      fi
+    done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
+
 }
 
 
