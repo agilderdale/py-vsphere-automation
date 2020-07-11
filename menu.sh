@@ -226,7 +226,7 @@ f_update_config_file1() {
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config
 
     while read line; do
-    case "$line" in \#*) continue ;; esac
+    case "$line" in \#*) sed '/^[[:space:]]*$/d'/tmp/config ; sed '/^#*$/d'/tmp/config; continue ;; esac
       var1=`echo $line`
       echo $var1
       if [[ ! -z "$var1" ]] ; then
