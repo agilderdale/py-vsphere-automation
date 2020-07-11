@@ -210,13 +210,12 @@ f_update_config_file() {
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
 
     while read -r line
-      var1=`echo $line |awk '{print $1}'` | grep -v 'T[^#]'
+    do
+      var1=`echo $line |awk '{print $1}'`
       echo $var1
-      do
-        echo $var1
-        if [[ ! -z "$var1" ]] ; then
+        if [[ ! $var1 =~ ^#.* ]] || [[ ! -z "$var1" ]] ; then
           echo "test"
-        #  sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
+          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
         fi
     done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
 }
