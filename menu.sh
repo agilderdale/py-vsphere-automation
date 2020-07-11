@@ -225,6 +225,8 @@ f_update_config_file1() {
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config
 
+    egrep -v ^'(#|$)' /tmp/config
+
     while read line; do
     case "$line" in \#*) sed -i -e '/^[[:space:]]*$/d' /tmp/config ; sed -i -e '/^\#*$/d' /tmp/config; continue ;; esac
       var1=`echo $line`
