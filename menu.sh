@@ -89,9 +89,9 @@ f_choice_question() {
         echo "  x - esxi7 | c - vcsa7 | n - nsx-t | k - kubectl"
         echo "  e - exit"
         echo "*******************************************************************************************"
-        read -p "   Select one of the options? (v|x|c|n|k|e): " vxcnke
+        read -p "   Select one of the options? (v|a|x|e): " vaxcnke
 
-        case $vxcnke in
+        case $vaxcnke in
             [Vv]* ) clear;
 #                    f_verify_pre_reqs;
                     ;;
@@ -210,10 +210,12 @@ f_update_config_file() {
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
 
     while read -r line
-      var1=`echo $line |awk '{print $1}'`
+      var1=`echo $line |awk '{print $1}'` | grep -v 'T[^#]'
+      echo $var1
       do
         echo $var1
         if [[ ! $var1 =~ ^#.* ]] || [[ ! -z "$var1" ]] ; then
+          echo "inside the loop"
           sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
         fi
     done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
