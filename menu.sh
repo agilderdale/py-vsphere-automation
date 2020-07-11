@@ -213,7 +213,7 @@ f_update_config_file() {
     do
       var1=`echo $line |awk '{print $1}'`
       echo $var1
-        if [[ ! $var1 =~ ^#.* ]] || [[ ! -z "$var1" ]] ; then
+        if [[  $var1 != \#* ]] || [[ ! -z "$var1" ]] ; then
           echo "test"
           sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
         else
