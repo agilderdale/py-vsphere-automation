@@ -211,7 +211,7 @@ f_update_config_file() {
 
     while read line; do
     case "$line" in \#*) continue ;; esac
-      var1=`echo $line |awk '{print $1}'`
+      var1=`echo $line |awk '{print $1}' | sed 's/;//g'`
       echo $var1
       if [[ ! -z "$var1" ]] ; then
          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
