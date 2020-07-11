@@ -223,26 +223,18 @@ f_update_config_file1() {
     source /tmp/variables
 
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
-    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config.yaml
+    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config
 
     while read line; do
     case "$line" in \#*) continue ;; esac
       var1=`echo $line`
       echo $var1
       if [[ ! -z "$var1" ]] ; then
-         sed -i -e "s/: /=/g" /tmp/config.yaml
+         sed -i -e "s/: /=/g" /tmp/config
       fi
-    done < /tmp/config.yaml
+    done < /tmp/config
 
-    while read line; do
-    case "$line" in \#*) continue ;; esac
-      var1=`echo $line |awk '{print $1}' | sed 's/://g'`
-      echo $var1
-      if [[ ! -z "$var1" ]] ; then
-         sed -i -e "s/<${var1}>/${!var1}/g" /tmp/config.yaml
-         sed -i -e 's/^/export /' /tmp/config.yaml
-      fi
-    done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
+    sed -i -e 's/^/export /' /tmp/config
 
 }
 
