@@ -173,7 +173,7 @@ f_init(){
     fi
     while read line; do
       f_input_vars $line
-    done
+    done < /tmp/dynamic_vars
 #    f_input_vars NTP_SERVER
 #    f_input_vars VC_DNS_SERVERS
 #    f_input_vars PARENT_VC
