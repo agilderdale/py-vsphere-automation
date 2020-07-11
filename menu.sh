@@ -97,7 +97,7 @@ f_choice_question() {
                     ;;
             [Aa]* ) f_init;
                     f_download_git_repo;
-                    f_update_config_file1;
+                    f_update_config_file;
                     ;;
             [Xx]* ) clear; f_init;
                     f_input_vars PKSRELEASE;
@@ -204,7 +204,38 @@ f_download_git_repo() {
     f_info "Git repo download - COMPLETED"
 }
 
+f_dynamic_vars() {
+    source /tmp/variables
+
+    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
+    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config
+
+    egrep -v ^'(#|$)' /tmp/config
+
+    >/tmp/dynamic_vars
+
+    while read line; do
+    case "$line" in
+        \#*) sed -i -e '/^[[:space:]]*$/d' /tmp/config ; sed -i -e '/^#/d' /tmp/config; continue ;;
+        \-*) sed -i -e '/-/d' /tmp/config; continue;; esac
+
+      var1=`echo $line`
+      echo $var1
+      if [[ ! -z "$var1" ]] ; then
+         echo $var1 >> /tmp/dynamic_vars
+         sed -i -e "s/: /=/g" /tmp/config
+      fi
+    done < /tmp/config
+
+    sed -i -e 's/^/export /' /tmp/config
+
+}
+
 f_update_config_file() {
+
+    f_dynamic_vars
+
+    source /tmp/config
     source /tmp/variables
 
     cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
@@ -217,32 +248,7 @@ f_update_config_file() {
          sed -i -e "s/<${var1}>/${!var1}/g" ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
       fi
     done < ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
-
 }
-f_update_config_file1() {
-    source /tmp/variables
-
-    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config.yaml
-    cp ${BITSDIR}/GIT/py-vsphere-automation/vsphere_config_template.yaml /tmp/config
-
-    egrep -v ^'(#|$)' /tmp/config
-
-    while read line; do
-    case "$line" in
-        \#*) sed -i -e '/^[[:space:]]*$/d' /tmp/config ; sed -i -e '/^#/d' /tmp/config; continue ;;
-        \-*) sed -i -e '/-/d' /tmp/config; continue;; esac
-
-      var1=`echo $line`
-      echo $var1
-      if [[ ! -z "$var1" ]] ; then
-         sed -i -e "s/: /=/g" /tmp/config
-      fi
-    done < /tmp/config
-
-    sed -i -e 's/^/export /' /tmp/config
-
-}
-
 
 #####################################
 # MAIN
