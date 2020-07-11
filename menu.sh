@@ -97,7 +97,7 @@ f_choice_question() {
                     ;;
             [Aa]* ) f_init;
                     f_download_git_repo;
-                    f_update_config_file;
+                    f_update_config_file1;
                     ;;
             [Xx]* ) clear; f_init;
                     f_input_vars PKSRELEASE;
