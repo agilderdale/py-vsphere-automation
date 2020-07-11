@@ -172,6 +172,7 @@ f_init(){
         f_verify
     fi
     while read line; do
+      echo "This is the $line"
       f_input_vars $line
     done < /tmp/dynamic_vars
 #    f_input_vars NTP_SERVER
