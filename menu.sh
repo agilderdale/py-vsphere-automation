@@ -220,9 +220,11 @@ f_dynamic_vars() {
         \-*) sed -i -e '/-/d' /tmp/config; continue;; esac
 
       var1=`echo $line`
+      var2=`echo $line |awk '{print $1}' | sed 's/://g'`
+
       echo $var1
       if [[ ! -z "$var1" ]] ; then
-         echo $var1 >> /tmp/dynamic_vars
+         echo $var2 >> /tmp/dynamic_vars
          sed -i -e "s/: /=/g" /tmp/config
       fi
     done < /tmp/config
