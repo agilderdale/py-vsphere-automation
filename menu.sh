@@ -162,6 +162,8 @@ f_input_vars_sec() {
 f_init(){
     f_input_vars BITSDIR
 
+    f_dynamic_vars
+    source /tmp/dynamic_vars
     source /tmp/variables
 
     if [[ ! -e $BITSDIR ]] ; then
@@ -169,19 +171,20 @@ f_init(){
         mkdir -p $BITSDIR;
         f_verify
     fi
-
-    f_input_vars DOMAIN
-    f_input_vars NTP_SERVER
-    f_input_vars VC_DNS_SERVERS
-    f_input_vars PARENT_VC
-    f_input_vars VC_ESX_HOST
-    f_input_vars VC_ESXI_DATASTORE
-    f_input_vars MASTER_PASSWORD
-    f_input_vars VC_GATEWAY
-    f_input_vars VC_PORTGROUP
-    f_input_vars ESX_IP_1
-    f_input_vars ESX_IP_2
-    f_input_vars ESX_IP_3
+    while read line; do
+      f_input_vars $line
+    done
+#    f_input_vars NTP_SERVER
+#    f_input_vars VC_DNS_SERVERS
+#    f_input_vars PARENT_VC
+#    f_input_vars VC_ESX_HOST
+#    f_input_vars VC_ESXI_DATASTORE
+#    f_input_vars MASTER_PASSWORD
+#    f_input_vars VC_GATEWAY
+#    f_input_vars VC_PORTGROUP
+#    f_input_vars ESX_IP_1
+#    f_input_vars ESX_IP_2
+#    f_input_vars ESX_IP_3
 }
 
 f_download_git_repo() {
@@ -234,8 +237,6 @@ f_dynamic_vars() {
 }
 
 f_update_config_file() {
-
-    f_dynamic_vars
 
     source /tmp/config
     source /tmp/variables
